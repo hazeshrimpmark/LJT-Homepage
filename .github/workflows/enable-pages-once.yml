@@ -1,0 +1,33 @@
+name: Enable Pages once
+
+on:
+  workflow_dispatch:
+
+permissions:
+  pages: write
+
+jobs:
+  enable:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Enable GitHub Pages from gh-pages branch
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          echo '--- Create Pages site ---'
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages" \
+            -f build_type=legacy \
+            -f 'source[branch]=gh-pages' \
+            -f 'source[path]=/'
+          echo '--- Update Pages source ---'
+          gh api --method PUT "repos/${GITHUB_REPOSITORY}/pages" \
+            -f build_type=legacy \
+            -f 'source[branch]=gh-pages' \
+            -f 'source[path]=/'
+          echo '--- Pages status ---'
+          gh api "repos/${GITHUB_REPOSITORY}/pages"
+          echo '--- Request Pages build ---'
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds"
+          exit 0
