@@ -1,0 +1,58 @@
+name: Verify generated site content
+
+on:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1.328.0
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+          cache-version: 0
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --baseurl /LJT-Homepage
+        env:
+          JEKYLL_ENV: production
+      - name: Verify About, publications, and CV content
+        run: |
+          set -euo pipefail
+          test -f _site/index.html
+          for term in \
+            'Junteng Liu' \
+            'HKUST NLP Group' \
+            'Shanghai Jiao Tong University' \
+            'MINIMAX' \
+            'Tencent WXG' \
+            'Shanghai AI Lab' \
+            'Zhiyuan Honor Scholarship' \
+            'jliugi@connect.ust.hk' \
+            'Vicent0205' \
+            'tbK9jl4AAAAJ' \
+            'junteng88716710' \
+            'SynLogic' \
+            'Vision4Chart' \
+            'Universal_Truthfulness_Hyperplane' \
+            'In-Context Sharpness' \
+            'C-Eval' \
+            'Composing Parameter-Efficient'; do
+            grep -q "$term" _site/index.html
+          done
+          test -f _site/publications/index.html
+          for term in \
+            'SynLogic' \
+            'On the Perception Bottleneck' \
+            'On the Universal Truthfulness' \
+            'In-Context Sharpness' \
+            'C-Eval' \
+            'Composing Parameter-Efficient'; do
+            grep -q "$term" _site/publications/index.html
+          done
+          test "$(find _site/publication -mindepth 1 -maxdepth 1 -type d | wc -l)" -eq 6
+          test -f _site/cv/index.html
+          grep -q 'SynLogic' _site/cv/index.html
