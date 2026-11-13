@@ -132,6 +132,7 @@ exclude:
   - .github
   - .jekyll-assets-cache
   - .sass-cache
+  - .devcontainer
   - assets/js/_main.js
   - assets/js/plugins
   - assets/js/vendor
@@ -139,6 +140,7 @@ exclude:
   - Capfile
   - config
   - Dockerfile
+  - docker-compose.yaml
   - Gemfile
   - Gruntfile.js
   - gulpfile.js
@@ -151,6 +153,12 @@ exclude:
   - README
   - tmp
   - vendor
+  - markdown_generator
+  - scripts
+  - talkmap
+  - talkmap.ipynb
+  - talkmap.py
+  - talkmap_out.ipynb
 keep_files:
   - .git
   - .svn
